@@ -57,13 +57,13 @@ The following advanced user stories are optional:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://imgur.com/a/WdDYP' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+![Video Walkthrough](http://imgur.com/a/WdDYP)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Doing multiple types of validation on the same input can get tricky without stepping on your own toes. I wound up simply doing each check individually and adding a unique error to my errors array for each different validation.
 
 ## License
 
