@@ -10,17 +10,26 @@
   if (is_post_request()) {
 
     // Confirm that POST values are present before accessing them.
-    $first_name = isset($_POST['first_name']) ? h($_POST['first_name']) : '';
-    $last_name = isset($_POST['last_name']) ? h($_POST['last_name']) : '';
+    $first_name = isset($_POST['first_name']) ? addslashes(h($_POST['first_name'])) : '';
+    $last_name = isset($_POST['last_name']) ? addslashes(h($_POST['last_name'])) : '';
     $email = isset($_POST['email']) ? h($_POST['email']) : '';
     $username = isset($_POST['username']) ? h($_POST['username']) : '';
 
     // Perform Validations
     // Hint: Write these in private/validation_functions.php
+    preg_match('/\A[A-Za-z\s\-,\.\']+\Z/', $first_name) ? '' : array_push($errors, 'First name should only contain letters, spaces, and the following symbols: - , . \' ') ;
+    preg_match('/\A[A-Za-z\s\-,\.\']+\Z/', $last_name) ? '' : array_push($errors, 'First name should only contain letters, spaces, and the following symbols: - , . \' ');
+    preg_match('/\A[A-Za-z0-9_@\.]+\Z/', $email) ? '' : array_push($errors, 'Email should only contain letters, numbers, and the following symbols: _ @ .') ;
+    preg_match('/\A[A-Za-z0-9_]+\Z/', $username) ? '' : array_push($errors, 'Username should only contain letters numbers and _');
+
     !is_blank($first_name) && has_length($first_name, ['min' => 2, 'max' => 255]) ? '' : array_push($errors, 'First name should be at least 2 characters');
     !is_blank($last_name) && has_length($last_name, ['min' => 2, 'max' => 255]) ? '' : array_push($errors, 'Last name should be at least 2 characters');
     !is_blank($email) && has_length($email, ['min' => 0, 'max' => 255]) && has_valid_email_format($email) ? '' : array_push($errors, 'Email is invalid');
     !is_blank($username) && has_length($username, ['min' => 8, 'max' => 255]) ? '' : array_push($errors, 'Username should be at least 8 characters');
+
+    // check if user exists
+    $sql = "SELECT username FROM users WHERE username = '$username'";
+    (db_query($db, $sql)->num_rows == 0) ? '' : array_push($errors, "Username is not available");
 
     // if there were no errors, submit data to database
     if (empty($errors)) {
